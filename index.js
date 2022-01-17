@@ -163,8 +163,8 @@ const writeFile = (filename, data) => {
 }
 
 function readFileAndWriteJson() {
-  let data = readFile("./input_codenarc.xml");
-  writeFile("./output_codenarc_sarif.json", data);
+  let data = readFile("input_codenarc.xml");
+  writeFile("output_codenarc_sarif.json", data);
 }
 try {
   // 'input_filename' xml to convert to sarif json
