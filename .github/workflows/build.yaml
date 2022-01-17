@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -28,6 +28,11 @@ jobs:
         cache: 'npm'
     - run: npm i -g @vercel/ncc
     - run: ncc build index.js
-    - run: git add action.yml dist/index.js node_modules/*
-    - run: git commit -m "compiled"
-    - run: git push
+
+    - name: "Push file change to repository"
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add action.yml dist/index.js node_modules/*
+        git commit -m "[Automated 🤖 ] update dist by pipeline "
+        git push
