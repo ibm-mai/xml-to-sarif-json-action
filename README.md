@@ -10,7 +10,7 @@ This action convert xml file to sarif json format
 
 ## Outputs
 
-## `output_codenarc_sarif.json`
+## `output.sarif.json`
 
 **NOTE** this file will be created in the root of the project
 
