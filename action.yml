@@ -2,4 +2,4 @@ name: 'Xml to SARIF json'
 description: 'convert xml to SARIF json format'
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'index.js'
