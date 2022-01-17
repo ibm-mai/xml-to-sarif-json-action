@@ -3,14 +3,14 @@ const github = require('@actions/github');
 var fs = require("fs");
 var crypto = require('crypto');
 
-var parser = require("xml2json");
+var parser = require("fast-xml-parser");
 var sarf_result = {};
 var sarf_result_buffer = null;
 
 const readFile = (filename) => {
   try {
     data = fs.readFileSync(filename, 'utf-8')
-    var json = parser.toJson(data);
+    var json = parser.parse(data);
     // let try to explorer file element
   
     const obj = JSON.parse(json);
