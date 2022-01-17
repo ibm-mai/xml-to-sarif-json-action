@@ -16,4 +16,4 @@ This action convert xml file to sarif json format
 
 ## Example usage
 
-uses: actions/hello-world-javascript-action@v1.1
+uses: actions/xml-to-sarif-json-action@v1.1
