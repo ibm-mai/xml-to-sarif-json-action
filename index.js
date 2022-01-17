@@ -12,9 +12,11 @@ var sarf_result_buffer = null;
 
 const readFile = (filename) => {
   try {
-    var data = fs.readFileSync(filename, 'utf-8')
-
-    const obj = parser.parse(data);
+    data = fs.readFileSync(filename, 'utf-8')
+    var json = parser.parse(data);
+    // let try to explorer file element
+  
+    const obj = JSON.parse(json);
   
     /*
       RULES SECTION
