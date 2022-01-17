@@ -1,0 +1,16 @@
+{
+  "name": "xml-to-sarif-json-action",
+  "version": "1.0.0",
+  "description": "convert xml to sarif json",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.0"
+  }
+}

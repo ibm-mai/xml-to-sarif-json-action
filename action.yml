@@ -1,0 +1,5 @@
+name: 'Xml to SARIF json'
+description: 'convert xml to SARIF json format'
+runs:
+  using: 'node16'
+  main: 'index.js'
