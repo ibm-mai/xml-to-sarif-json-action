@@ -2,18 +2,19 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 var fs = require("fs");
 var crypto = require('crypto');
+// var parser = require('fast-xml-parser');
+const { XMLParser, XMLBuilder, XMLValidator} = require("../src/fxp");
+const parser = new XMLParser();
 
-var parser = require("xml2json");
 var sarf_result = {};
 var sarf_result_buffer = null;
 
+
 const readFile = (filename) => {
   try {
-    data = fs.readFileSync(filename, 'utf-8')
-    var json = parser.toJson(data);
-    // let try to explorer file element
-  
-    const obj = JSON.parse(json);
+    var data = fs.readFileSync(filename, 'utf-8')
+
+    const obj = parser.parse(data);
   
     /*
       RULES SECTION
