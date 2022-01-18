@@ -1,8 +1,11 @@
 const { XMLFile, SarifConverter } = require("./utils")
 const fs = require("fs");
+const core = require('@actions/core');
 
 function main() {
-    const xmlFile = new XMLFile("./build/reports/codenarc/main.xml");
+    const getXmlInputFileName = core.getInput('xml-input-filepath');
+
+    const xmlFile = new XMLFile(getXmlInputFileName);
     const json = xmlFile.getFileAsJson();
 
     const sarifConverter = new SarifConverter(json);

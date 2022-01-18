@@ -1,8 +1,8 @@
 name: 'Xml to SARIF json'
 description: 'convert xml to SARIF json format'
 inputs:
-  xml-input-filename:  # id of input
-    description: 'input xml filename'
+  xml-input-filepath:  # id of input
+    description: 'input xml filepath'
     required: true
     default: './input_codenarc.xml'
 runs:
