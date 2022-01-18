@@ -47,34 +47,36 @@ class SarifConverter {
      */
     getResults() {
         const results = [];
-        if (!this.jsonObj.CodeNarc || !this.jsonObj.CodeNarc.Package || !this.jsonObj.CodeNarc.Package.File) throw new Error("The input object cannot be converted")
-        for (const file of this.jsonObj.CodeNarc.Package.File) {
-            if (!file.Violation) continue;
-            const { Violation } = file;
-            for (const [index, violation] of Violation.entries()) {
-                results.push({
-                    ruleId: crypto
-                        .createHash("md5")
-                        .update(violation.ruleName)
-                        .digest("hex"),
-                    ruleIndex: index,
-                    message: {
-                        text: violation.Message,
-                    },
-                    locations: [
-                        {
-                            physicalLocation: {
-                                artifactLocation: {
-                                    uri: file.name,
-                                    uriBaseId: "%SRCROOT%",
-                                },
-                                region: {
-                                    startLine: parseInt(violation.lineNumber || '0')
+        if (!this.jsonObj.CodeNarc || !this.jsonObj.CodeNarc.Package) throw new Error("The input object cannot be converted")
+        for (const pack of this.jsonObj.CodeNarc.Package) {
+            console.log("Package: "+ pack.path);
+            if(pack.File == undefined) continue;
+            for (const file of pack.File) {
+                for (const [index, violation] of file.Violation.entries()) {
+                    results.push({
+                        ruleId: crypto
+                            .createHash("md5")
+                            .update(violation.ruleName)
+                            .digest("hex"),
+                        ruleIndex: index,
+                        message: {
+                            text: violation.Message,
+                        },
+                        locations: [
+                            {
+                                physicalLocation: {
+                                    artifactLocation: {
+                                        uri: file.name,
+                                        uriBaseId: "%SRCROOT%",
+                                    },
+                                    region: {
+                                        startLine: parseInt(violation.lineNumber || '0')
+                                    },
                                 },
                             },
-                        },
-                    ],
-                })
+                        ],
+                    })
+                }
             }
         }
         return results;
