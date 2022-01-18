@@ -1,5 +1,10 @@
 name: 'Xml to SARIF json'
 description: 'convert xml to SARIF json format'
+inputs:
+  xml-input-filename:  # id of input
+    description: 'input xml filename'
+    required: true
+    default: './input_codenarc.xml'
 runs:
   using: 'node16'
   main: 'app.js'
