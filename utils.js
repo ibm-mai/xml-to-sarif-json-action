@@ -70,7 +70,7 @@ class SarifConverter {
                                         uriBaseId: "%SRCROOT%",
                                     },
                                     region: {
-                                        startLine: parseInt(violation.lineNumber || '0')
+                                        startLine: parseInt(violation.lineNumber || '1')
                                     },
                                 },
                             },
