@@ -49,6 +49,7 @@ class SarifConverter {
         for (const [index,r] of rules.entries()) {
             ruleIndexMap[r.id] = index;
         }
+        const priorityLevelMap = {"3" : "error", "2": "warning", "1": "note"};
 
         const results = [];
         if (!this.jsonObj.CodeNarc || !this.jsonObj.CodeNarc.Package) throw new Error("The input object cannot be converted")
@@ -60,6 +61,7 @@ class SarifConverter {
                     results.push({
                         ruleId: violation.ruleName,
                         ruleIndex: ruleIndexMap[violation.ruleName],
+                        level: priorityLevelMap[violation.priority] || priorityLevelMap.get("1"),
                         message: {
                             text: violation.Message || violation.ruleName,
                         },
@@ -67,7 +69,7 @@ class SarifConverter {
                             {
                                 physicalLocation: {
                                     artifactLocation: {
-                                        uri: file.name,
+                                        uri: pack.path + '/' + file.name,
                                         uriBaseId: "%SRCROOT%",
                                     },
                                     region: {
