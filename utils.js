@@ -25,7 +25,7 @@ class SarifConverter {
             rules.push({
                 id: rule.name,
                 shortDescription: {
-                    text: rule.Description,
+                    text: rule.name,
                 },
                 fullDescription: {
                     text: rule.Description,
