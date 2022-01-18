@@ -33,7 +33,7 @@ function main() {
     };
 
     let data = JSON.stringify(sarf_result, null, 2);
-    fs.writeFileSync('codenarc-sarif.json', data);
+    fs.writeFileSync('output.sarif', data);
 }
 
 main();
