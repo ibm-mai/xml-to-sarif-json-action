@@ -23,8 +23,7 @@ class SarifConverter {
         if (!this.jsonObj.CodeNarc || !this.jsonObj.CodeNarc.Rules || !this.jsonObj.CodeNarc.Rules.Rule) throw new Error("The input object cannot be converted")
         for (const rule of this.jsonObj.CodeNarc.Rules.Rule) {
             rules.push({
-                id: crypto.createHash("md5").update(rule.name).digest("hex"),
-                name: rule.name,
+                id: rule.name,
                 shortDescription: {
                     text: rule.Description,
                 },
@@ -42,25 +41,27 @@ class SarifConverter {
 
     /**
      * Return the results of this.jsonObj in sarif format
-     * 
+     * @param {any[]} rules Array of rules
      * @returns {any[]}
      */
-    getResults() {
+    getResults(rules) {
+        const ruleIndexMap = {};
+        for (const [index,r] of rules.entries()) {
+            ruleIndexMap[r.id] = index;
+        }
+
         const results = [];
         if (!this.jsonObj.CodeNarc || !this.jsonObj.CodeNarc.Package) throw new Error("The input object cannot be converted")
         for (const pack of this.jsonObj.CodeNarc.Package) {
             console.log("Package: "+ pack.path);
             if(pack.File == undefined) continue;
             for (const file of pack.File) {
-                for (const [index, violation] of file.Violation.entries()) {
+                for (const violation of file.Violation) {
                     results.push({
-                        ruleId: crypto
-                            .createHash("md5")
-                            .update(violation.ruleName)
-                            .digest("hex"),
-                        ruleIndex: index,
+                        ruleId: violation.ruleName,
+                        ruleIndex: ruleIndexMap[violation.ruleName],
                         message: {
-                            text: violation.Message,
+                            text: violation.Message || violation.ruleName,
                         },
                         locations: [
                             {

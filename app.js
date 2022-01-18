@@ -10,7 +10,7 @@ function main() {
 
     const sarifConverter = new SarifConverter(json);
     const rules = sarifConverter.getRules();
-    const results = sarifConverter.getResults();
+    const results = sarifConverter.getResults(rules);
 
     const sarf_result = {
         $schema:
