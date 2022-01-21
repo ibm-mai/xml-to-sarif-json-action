@@ -49,41 +49,57 @@ class SarifConverter {
         for (const [index,r] of rules.entries()) {
             ruleIndexMap[r.id] = index;
         }
-        const priorityLevelMap = {"1" : "error", "2": "warning", "3": "note"};
-        const groovyCodeBasePath = "src/main/groovy/";
 
         const results = [];
         if (!this.jsonObj.CodeNarc || !this.jsonObj.CodeNarc.Package) throw new Error("The input object cannot be converted")
         for (const pack of this.jsonObj.CodeNarc.Package) {
             console.log("Package: "+ pack.path);
             if(pack.File == undefined) continue;
-            for (const file of pack.File) {
-                for (const violation of file.Violation) {
-                    results.push({
-                        ruleId: violation.ruleName,
-                        ruleIndex: ruleIndexMap[violation.ruleName],
-                        level: priorityLevelMap[violation.priority] || priorityLevelMap.get("3"),
-                        message: {
-                            text: violation.Message || violation.ruleName,
-                        },
-                        locations: [
-                            {
-                                physicalLocation: {
-                                    artifactLocation: {
-                                        uri: groovyCodeBasePath + pack.path + '/' + file.name,
-                                        uriBaseId: "%SRCROOT%",
-                                    },
-                                    region: {
-                                        startLine: parseInt(violation.lineNumber || '1')
-                                    },
-                                },
-                            },
-                        ],
-                    })
+
+            else if(Array.isArray(pack.File)) {
+                for (const file of pack.File) {
+                    results.push(this.parseFileViolations(file, ruleIndexMap, pack.path));
                 }
+
+            }else { 
+                //In case of a package contains only 1 file, json result will be a file object instead of a list of files
+                results.push(this.parseFileViolations(pack.File, ruleIndexMap, pack.path));
             }
         }
         return results;
+    }
+
+        /**
+     * Return a file violation object in sarif format
+     * @returns {any}
+     */
+    parseFileViolations(file, ruleIndexMap, packagePath) {
+        const priorityLevelMap = {"1" : "error", "2": "warning", "3": "note"};
+        const groovyCodeBasePath = "src/main/groovy/";
+
+        for (const violation of file.Violation) {
+            return {
+                ruleId: violation.ruleName,
+                ruleIndex: ruleIndexMap[violation.ruleName],
+                level: priorityLevelMap[violation.priority] || priorityLevelMap.get("3"),
+                message: {
+                    text: violation.Message || violation.ruleName,
+                },
+                locations: [
+                    {
+                        physicalLocation: {
+                            artifactLocation: {
+                                uri: groovyCodeBasePath + packagePath + '/' + file.name,
+                                uriBaseId: "%SRCROOT%",
+                            },
+                            region: {
+                                startLine: parseInt(violation.lineNumber || '1')
+                            },
+                        },
+                    },
+                ],
+            }
+        }
     }
 }
 
