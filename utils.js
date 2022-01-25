@@ -69,36 +69,51 @@ class SarifConverter {
         return results;
     }
 
-        /**
-     * Return a file violation object in sarif format
-     * @returns {any}
+    /**
+     * Return a list of violations object for an input file in sarif format
+     * @returns {any[]}
      */
     parseFileViolations(file, ruleIndexMap, packagePath) {
+        const violationList = []
+        if(Array.isArray(file.Violation)){
+            for (const violation of file.Violation) {
+                violationList.push(this.parseViolation(violation, ruleIndexMap, packagePath));
+            }
+        
+        } else {
+            violationList.push(this.parseViolation(file.Violation, ruleIndexMap, packagePath + '/' + file.name));
+        }
+        return violationList;
+    }
+
+    /**
+     * Return a violation object in sarif format
+     * @returns {any}
+     */
+    parseViolation(violation, ruleIndexMap, fileNameAndPackagePath) {
         const priorityLevelMap = {"1" : "error", "2": "warning", "3": "note"};
         const groovyCodeBasePath = "src/main/groovy/";
 
-        for (const violation of file.Violation) {
-            return {
-                ruleId: violation.ruleName,
-                ruleIndex: ruleIndexMap[violation.ruleName],
-                level: priorityLevelMap[violation.priority] || priorityLevelMap.get("3"),
-                message: {
-                    text: violation.Message || violation.ruleName,
-                },
-                locations: [
-                    {
-                        physicalLocation: {
-                            artifactLocation: {
-                                uri: groovyCodeBasePath + packagePath + '/' + file.name,
-                                uriBaseId: "%SRCROOT%",
-                            },
-                            region: {
-                                startLine: parseInt(violation.lineNumber || '1')
-                            },
+        return {
+            ruleId: violation.ruleName,
+            ruleIndex: ruleIndexMap[violation.ruleName],
+            level: priorityLevelMap[violation.priority] || priorityLevelMap.get("3"),
+            message: {
+                text: violation.Message || violation.ruleName,
+            },
+            locations: [
+                {
+                    physicalLocation: {
+                        artifactLocation: {
+                            uri: groovyCodeBasePath + fileNameAndPackagePath,
+                            uriBaseId: "%SRCROOT%",
+                        },
+                        region: {
+                            startLine: parseInt(violation.lineNumber || '1')
                         },
                     },
-                ],
-            }
+                },
+            ],
         }
     }
 }
