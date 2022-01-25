@@ -63,7 +63,7 @@ class SarifConverter {
 
             }else { 
                 //In case of a package contains only 1 file, json result will be a file object instead of a list of files
-                results.push(...this.parseFileViolations(pack.File, ruleIndexMap, ...pack.path));å
+                results.push(...this.parseFileViolations(pack.File, ruleIndexMap, ...pack.path));
             }
         }
         return results;
