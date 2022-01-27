@@ -52,21 +52,32 @@ class SarifConverter {
 
         const results = [];
         if (!this.jsonObj.CodeNarc || !this.jsonObj.CodeNarc.Package) throw new Error("The input object cannot be converted")
-        for (const pack of this.jsonObj.CodeNarc.Package) {
-            console.log("Package: "+ pack.path);
-            if(pack.File == undefined) continue;
-
-            else if(Array.isArray(pack.File)) {
-                for (const file of pack.File) {
-                    results.push(...this.parseFileViolations(file, ruleIndexMap, pack.path));
-                }
-
-            }else { 
-                //In case of a package contains only 1 file, json result will be a file object instead of a list of files
-                results.push(...this.parseFileViolations(pack.File, ruleIndexMap, pack.path));
+        if(Array.isArray(this.jsonObj.CodeNarc.Package)){
+            for (const pack of this.jsonObj.CodeNarc.Package) {
+                results.push(...this.parseCodeNarcPackage(pack, ruleIndexMap));
             }
+
+        } else {
+            results.push(...this.parseCodeNarcPackage(this.jsonObj.CodeNarc.Package, ruleIndexMap));
         }
         return results;
+    }
+
+    parseCodeNarcPackage(pack, ruleIndexMap) {
+        console.log("Package: "+ pack.path);
+        const violationList = []
+        if(pack.File == undefined) return violationList;
+
+        else if(Array.isArray(pack.File)) {
+            for (const file of pack.File) {
+                violationList.push(...this.parseFileViolations(file, ruleIndexMap, pack.path));
+            }
+
+        }else { 
+            //In case of a package contains only 1 file, json result will be a file object instead of a list of files
+            violationList.push(...this.parseFileViolations(pack.File, ruleIndexMap, pack.path));
+        }
+        return violationList;
     }
 
     /**
